@@ -1,0 +1,31 @@
+body {
+  background-color: #eef;
+  font-family: Georgia, serif;
+  padding: 20px;
+}
+
+h1 {
+  color: #444;
+}
+
+input, button {
+  font-size: 1em;
+  margin: 5px 0;
+  padding: 6px 10px;
+  border-radius: 5px;
+  border: 1px solid #bbb;
+}
+
+#output {
+  margin-top: 1em;
+}
+
+.result {
+  padding: 1em;
+  background-color: #fff;
+  border: 1px solid #aaa;
+  font-weight: bold;
+  color: #2c3e50;
+  border-radius: 8px;
+  margin-top: 10px;
+} 

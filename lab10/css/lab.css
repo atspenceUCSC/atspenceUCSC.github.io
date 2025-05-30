@@ -1,0 +1,23 @@
+body {
+  font-family: Arial, sans-serif;
+  padding: 20px;
+  background-color: #f8f8f8;
+}
+
+button {
+  padding: 10px;
+  font-size: 16px;
+  margin-top: 10px;
+}
+
+.text p {
+  display: inline-block;
+  max-width: 60%;
+  margin: 3px;
+  padding: 5px 10px;
+  border-radius: 15px;
+  background-color: darkgray;
+  color: white;
+  font-family: sans-serif;
+  font-size: 0.8em;
+} 

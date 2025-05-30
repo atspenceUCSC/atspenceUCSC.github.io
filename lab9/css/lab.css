@@ -1,0 +1,24 @@
+body {
+  font-family: sans-serif;
+  padding: 20px;
+  background: #f8f8f8;
+}
+
+#output {
+  margin-top: 20px;
+  font-size: 1.2em;
+  color: navy;
+}
+
+.special {
+  background-color: lavender;
+  border: dotted 5px red;
+  color: pink;
+  font-weight: bold;
+}
+
+button {
+  margin: 10px 0 0 10px;
+  padding: 5px 12px;
+  font-size: 1em;
+} 

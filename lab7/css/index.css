@@ -1,0 +1,21 @@
+body {
+  font-family: sans-serif;
+  background-color: #e9f7ef;
+  color: #333;
+  padding: 20px;
+}
+
+h1, h2 {
+  color: #2c3e50;
+}
+
+.output-name {
+  background: #fffbe6;
+  border: 1px solid #f7d774;
+  color: #2c3e50;
+  padding: 12px;
+  margin: 20px 0;
+  border-radius: 6px;
+  font-size: 1.2em;
+  text-align: center;
+} 

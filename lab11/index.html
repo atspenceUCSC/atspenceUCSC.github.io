@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Lab 11 - Events and Forms</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="js/lab.js" defer></script>
+</head>
+<body>
+  <h1>Lab 11: Events and Forms</h1>
+
+  <div id="challenge">
+    <h2>Challenge</h2>
+    <p>For this lab, I wanted to make a form that responds to what I type and the color I pick. I used jQuery to grab the form data and update the page without reloading.</p>
+  </div>
+
+  <div id="problems">
+    <h2>Problems</h2>
+    <p>I had to look up how to use event.preventDefault() and how to get values from form fields with jQuery. It took a few tries to get the background color to change.</p>
+  </div>
+
+  <div id="results">
+    <h2>Results</h2>
+    <div id="form-area">
+      <form id="user-form">
+        <label for="user-name">Name:</label>
+        <input type="text" id="user-name" placeholder="Input your name">
+        <label for="favcolor">Favorite Color:</label>
+        <input type="color" id="favcolor">
+        <button type="submit">Submit</button>
+      </form>
+      <div id="output"></div>
+    </div>
+  </div>
+</body>
+</html> 
