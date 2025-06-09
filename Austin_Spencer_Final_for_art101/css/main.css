@@ -1,0 +1,341 @@
+/* Base Styles */
+:root {
+    --primary-color: #2c3e50;
+    --secondary-color: #3498db;
+    --error-color: #e74c3c;
+    --success-color: #2ecc71;
+    --text-color: #333;
+    --light-bg: #f0f0f0;
+    --white: #fff;
+    --black: #000;
+    --blood-red: #ff0000;
+    --terminal-green: #00ff00;
+}
+
+/* Reset and Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.6;
+    color: var(--text-color);
+    background-color: var(--light-bg);
+    transition: background-color 0.5s ease;
+}
+
+/* State Header Styles */
+#state-header {
+    background-color: #f1f1f1;
+    padding: 1rem;
+    border-bottom: 2px solid #ccc;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 0.9rem;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+#state-header .header-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+#state-header .header-left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+#state-header .header-right {
+    text-align: right;
+}
+
+#state-header img {
+    height: 48px;
+    width: auto;
+}
+
+/* Form Container */
+.container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: var(--white);
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Form Elements */
+.form-section {
+    display: none;
+    margin-bottom: 20px;
+}
+
+.form-section.active {
+    display: block;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+input[type="text"],
+input[type="email"],
+select,
+textarea {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+    font-family: inherit;
+}
+
+.radio-group {
+    margin: 10px 0;
+}
+
+.radio-group label {
+    display: inline-block;
+    margin-right: 15px;
+    font-weight: normal;
+}
+
+button {
+    background-color: var(--secondary-color);
+    color: var(--white);
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #2980b9;
+}
+
+/* Error Messages */
+.error {
+    color: var(--error-color);
+    font-size: 14px;
+    margin-top: 5px;
+    display: none;
+}
+
+/* Glitch Effects */
+.glitch {
+    animation: glitch 0.3s infinite;
+}
+
+@keyframes glitch {
+    0% { transform: translate(0) }
+    20% { transform: translate(-2px, 2px) }
+    40% { transform: translate(-2px, -2px) }
+    60% { transform: translate(2px, 2px) }
+    80% { transform: translate(2px, -2px) }
+    100% { transform: translate(0) }
+}
+
+/* Terminal Text */
+.terminal-text {
+    font-family: "Courier New", Courier, monospace;
+    color: var(--terminal-green);
+    text-shadow: 0 0 5px var(--terminal-green);
+}
+
+/* Blood Text */
+.blood-text {
+    color: var(--blood-red);
+    text-shadow: 0 0 10px var(--blood-red);
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.7; }
+    100% { opacity: 1; }
+}
+
+/* Typewriter Effect */
+.typewriter {
+    overflow: hidden;
+    border-right: .15em solid var(--blood-red);
+    white-space: nowrap;
+    margin: 0 auto;
+    letter-spacing: .15em;
+    animation: 
+        typing 3.5s steps(40, end),
+        blink-caret .75s step-end infinite;
+}
+
+@keyframes typing {
+    from { width: 0 }
+    to { width: 100% }
+}
+
+@keyframes blink-caret {
+    from, to { border-color: transparent }
+    50% { border-color: var(--blood-red) }
+}
+
+/* Enhanced Glitch Effects */
+.glitch-text {
+    position: relative;
+    animation: glitch 0.3s infinite;
+    text-shadow: 2px 2px var(--blood-red), -2px -2px var(--terminal-green);
+}
+
+.glitch-text::before,
+.glitch-text::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.glitch-text::before {
+    left: 2px;
+    text-shadow: -2px 0 var(--blood-red);
+    animation: glitch-anim 3s infinite linear alternate-reverse;
+}
+
+.glitch-text::after {
+    left: -2px;
+    text-shadow: 2px 0 var(--terminal-green);
+    animation: glitch-anim 2s infinite linear alternate-reverse;
+}
+
+@keyframes glitch-anim {
+    0% { clip-path: inset(20% 0 30% 0); }
+    20% { clip-path: inset(60% 0 10% 0); }
+    40% { clip-path: inset(40% 0 50% 0); }
+    60% { clip-path: inset(80% 0 5% 0); }
+    80% { clip-path: inset(10% 0 70% 0); }
+    100% { clip-path: inset(30% 0 20% 0); }
+}
+
+/* Form Page Styles */
+.form-page {
+    display: none;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 1.5em;
+    background: var(--white);
+    border: 1px solid #ccc;
+}
+
+.form-page.active {
+    display: block;
+}
+
+/* Range Slider */
+.range-group {
+    display: flex;
+    align-items: center;
+    gap: 1em;
+}
+
+.range-group input[type="range"] {
+    flex: 1;
+}
+
+.range-group span {
+    min-width: 2em;
+    text-align: center;
+}
+
+/* Symbol Labels */
+.symbol-label {
+    font-size: 24px;
+    padding: 10px;
+    margin: 5px;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.symbol-label:hover {
+    text-shadow: 0 0 5px rgba(255, 0, 0, 0.5);
+}
+
+/* Shadow Overlay */
+.shadow-overlay {
+    position: fixed;
+    top: 0;
+    left: -100px;
+    width: 50px;
+    height: 100vh;
+    background: linear-gradient(to right, rgba(0,0,0,0.8), transparent);
+    pointer-events: none;
+    z-index: 1000;
+}
+
+/* Fade Transitions */
+.fade-in {
+    animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container {
+        padding: 10px;
+        margin: 10px;
+    }
+
+    #state-header .header-content {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    #state-header .header-right {
+        margin-top: 1rem;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    select,
+    textarea {
+        font-size: 16px; /* Prevents zoom on mobile */
+    }
+}
+
+/* Print Styles */
+@media print {
+    #state-header {
+        position: static;
+    }
+
+    .container {
+        box-shadow: none;
+    }
+
+    button {
+        display: none;
+    }
+} 

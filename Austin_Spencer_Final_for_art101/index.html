@@ -1,0 +1,1685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>State of California - CIRA Survey</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <style>
+        /* Base styles and variables */
+        :root {
+            --primary-color: #2c3e50;
+            --accent-color: #3498db;
+            --border-color: #e0e0e0;
+            --text-color: #333;
+            --background-color: #f8f9fa;
+            --form-background: #ffffff;
+            --heading-font: 'Georgia', serif;
+            --body-font: 'Arial', sans-serif;
+        }
+
+        /* State Header Styles */
+        #state-header {
+            background-color: var(--background-color);
+            padding: 1rem;
+            border-bottom: 2px solid var(--border-color);
+            font-family: var(--body-font);
+            font-size: 0.9rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        #state-header .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        #state-header .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        #state-header .header-right {
+            text-align: right;
+        }
+
+        #state-header img {
+            height: 48px;
+            width: auto;
+        }
+
+        .state-disclaimer {
+            font-family: Arial, sans-serif;
+            font-size: 0.9rem;
+            color: #444;
+            margin: 1rem auto;
+            max-width: 1200px;
+            padding: 0 1rem;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f0f0;
+            color: #333;
+            transition: background-color 0.5s ease;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+        }
+
+        .form-section {
+            display: none;
+            margin-bottom: 20px;
+        }
+
+        .form-section.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        .radio-group {
+            margin: 10px 0;
+        }
+
+        .radio-group label {
+            display: inline-block;
+            margin-right: 15px;
+            font-weight: normal;
+        }
+
+        button {
+            background-color: #3498db;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        .error {
+            color: #e74c3c;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        /* Subtle glitch effect for later use */
+        .glitch {
+            animation: glitch 0.3s infinite;
+        }
+
+        @keyframes glitch {
+            0% { transform: translate(0) }
+            20% { transform: translate(-2px, 2px) }
+            40% { transform: translate(-2px, -2px) }
+            60% { transform: translate(2px, 2px) }
+            80% { transform: translate(2px, -2px) }
+            100% { transform: translate(0) }
+        }
+
+        /* Fade transition for sections */
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .symbol-label {
+            font-size: 24px;
+            padding: 10px;
+            margin: 5px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .symbol-label:hover {
+            text-shadow: 0 0 5px rgba(255, 0, 0, 0.5);
+        }
+
+        #processing-text {
+            text-align: center;
+            font-style: italic;
+            color: #666;
+        }
+
+        #continue-button {
+            transition: transform 0.1s ease;
+        }
+
+        #secret-code {
+            font-family: monospace;
+            letter-spacing: 2px;
+        }
+
+        #echo-message {
+            text-align: center;
+            font-size: 1.2em;
+            color: #ff0000;
+            text-shadow: 0 0 5px rgba(255, 0, 0, 0.3);
+        }
+
+        .warning-text {
+            font-family: monospace;
+            font-size: 1.2em;
+            color: #ff0000;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .chat-container {
+            background-color: #f8f8f8;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .system-message {
+            color: #ff0000;
+            margin-bottom: 20px;
+            font-style: italic;
+        }
+
+        .user-input-container {
+            margin: 20px 0;
+        }
+
+        .system-response {
+            color: #ff0000;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+
+        .escape-options label {
+            display: block;
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .escape-options label:hover {
+            background-color: #f0f0f0;
+            border-color: #ff0000;
+        }
+
+        .final-text {
+            font-family: monospace;
+            white-space: pre-line;
+            text-align: center;
+            font-size: 1.2em;
+            color: #ff0000;
+            margin: 20px 0;
+            min-height: 100px;
+        }
+
+        #restart-button button {
+            background-color: #ff0000;
+        }
+
+        #restart-button button:hover {
+            background-color: #cc0000;
+        }
+
+        /* Enhanced glitch effects */
+        .glitch-text {
+            position: relative;
+            animation: glitch 0.3s infinite;
+            text-shadow: 2px 2px #ff0000, -2px -2px #00ff00;
+        }
+
+        .glitch-text::before,
+        .glitch-text::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .glitch-text::before {
+            left: 2px;
+            text-shadow: -2px 0 #ff0000;
+            animation: glitch-anim 3s infinite linear alternate-reverse;
+        }
+
+        .glitch-text::after {
+            left: -2px;
+            text-shadow: 2px 0 #00ff00;
+            animation: glitch-anim 2s infinite linear alternate-reverse;
+        }
+
+        @keyframes glitch-anim {
+            0% { clip-path: inset(20% 0 30% 0); }
+            20% { clip-path: inset(60% 0 10% 0); }
+            40% { clip-path: inset(40% 0 50% 0); }
+            60% { clip-path: inset(80% 0 5% 0); }
+            80% { clip-path: inset(10% 0 70% 0); }
+            100% { clip-path: inset(30% 0 20% 0); }
+        }
+
+        .terminal-text {
+            font-family: monospace;
+            color: #00ff00;
+            text-shadow: 0 0 5px #00ff00;
+        }
+
+        .blood-text {
+            color: #ff0000;
+            text-shadow: 0 0 10px #ff0000;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+
+        /* Typewriter effect */
+        .typewriter {
+            overflow: hidden;
+            border-right: .15em solid #ff0000;
+            white-space: nowrap;
+            margin: 0 auto;
+            letter-spacing: .15em;
+            animation: 
+                typing 3.5s steps(40, end),
+                blink-caret .75s step-end infinite;
+        }
+
+        @keyframes typing {
+            from { width: 0 }
+            to { width: 100% }
+        }
+
+        @keyframes blink-caret {
+            from, to { border-color: transparent }
+            50% { border-color: #ff0000 }
+        }
+
+        /* New styles for mundane questionnaire */
+        #officialBanner {
+            max-width: 700px;
+            margin: 2em auto;
+            padding: 1em 2em;
+            background-color: #f8f8f8;
+            color: #222;
+            font-family: Arial, sans-serif;
+            border: 1px solid #ccc;
+        }
+
+        #officialBanner h1 {
+            font-size: 1.5em;
+            text-align: center;
+            text-transform: uppercase;
+            margin-bottom: 0.5em;
+        }
+
+        #officialBanner h2 {
+            font-size: 1.1em;
+            text-align: center;
+            margin-bottom: 1em;
+            color: #555;
+        }
+
+        #officialBanner p {
+            margin-bottom: 1em;
+            font-size: 0.95em;
+        }
+
+        #officialBanner p:last-child {
+            margin-bottom: 0;
+        }
+
+        .form-page {
+            display: none;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 2em;
+            background: var(--form-background);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            font-family: var(--body-font);
+        }
+
+        .form-page.active {
+            display: block;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .form-page h2 {
+            font-family: var(--heading-font);
+            color: var(--primary-color);
+            font-size: 1.5em;
+            margin-bottom: 1.5em;
+            padding-bottom: 0.5em;
+            border-bottom: 2px solid var(--accent-color);
+        }
+
+        .form-group {
+            margin-bottom: 1.5em;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5em;
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="email"],
+        .form-group input[type="date"],
+        .form-group input[type="number"],
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75em;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 1em;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+            outline: none;
+        }
+
+        .radio-group,
+        .checkbox-group {
+            margin: 0.5em 0;
+        }
+
+        .radio-group label,
+        .checkbox-group label {
+            display: block;
+            margin: 0.5em 0;
+            font-weight: normal;
+            cursor: pointer;
+        }
+
+        .radio-group input[type="radio"],
+        .checkbox-group input[type="checkbox"] {
+            margin-right: 0.5em;
+        }
+
+        .range-group {
+            display: flex;
+            align-items: center;
+            gap: 1em;
+        }
+
+        .range-group input[type="range"] {
+            flex: 1;
+        }
+
+        .range-group span {
+            min-width: 2em;
+            text-align: center;
+        }
+
+        .next-btn {
+            background-color: var(--accent-color);
+            color: white;
+            padding: 0.75em 1.5em;
+            border: none;
+            border-radius: 4px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            display: block;
+            width: auto;
+            margin: 2em auto 0;
+        }
+
+        .next-btn:hover {
+            background-color: #2980b9;
+            transform: translateY(-1px);
+        }
+
+        .next-btn:active {
+            transform: translateY(0);
+        }
+
+        .error {
+            color: #c00;
+            font-size: 0.875em;
+            margin-top: 0.25em;
+            display: none;
+        }
+
+        /* Horror Phase Styles */
+        #horror-phase {
+            background-color: #0a0a0a;
+            color: #e0e0e0;
+        }
+
+        #horror-phase .form-section {
+            background-color: rgba(20, 20, 20, 0.95);
+            border: 1px solid #333;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Terminal Text - Used sparingly for key messages */
+        .terminal-text {
+            font-family: 'Consolas', 'Monaco', monospace;
+            color: #00ff00;
+            text-shadow: 0 0 5px rgba(0, 255, 0, 0.3);
+            letter-spacing: 0.5px;
+        }
+
+        /* Blood Text - Used only for dramatic moments */
+        .blood-text {
+            color: #ff0000;
+            text-shadow: 0 0 10px rgba(255, 0, 0, 0.3);
+            animation: pulse 4s infinite;
+        }
+
+        /* Glitch effect - Used selectively */
+        .glitch-text {
+            position: relative;
+            animation: glitch 0.3s infinite;
+            animation-play-state: paused;
+        }
+
+        .glitch-text:hover {
+            animation-play-state: running;
+        }
+
+        /* Static noise background - Used for specific sections */
+        .static-bg {
+            background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAMAAAAp4XiDAAAAUVBMVEWFhYWDg4N3d3dtbW17e3t1dXWBgYGHh4d5eXlzc3OLi4ubm5uVlZWPj4+NjY19fX2JiYl/f39ra2uRkZGZmZlpaWmXl5dvb29xcXGTk5NnZ2c8TV1mAAAAG3RSTlNAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEAvEOwtAAAFVklEQVR4XpWWB67c2BUFb3g557T/hRo9/WUMZHlgr4Bg8Z4qQgQJlHI4A8SzFVrapvmTF9O7dmYRFZ60YiBhJRCgh1FYhiLAmdvX0CzTOpNE77ME0Zty/nWWzchDtiqrmQDeuv3powQ5ta2eN0FY0InkqDD73lT9c9lEzwUNqgFHs9VQce3TVClFCQrSTfOiYkVJQBmpbq2L6iZavPnAPcoU0dSw0SUTqz/GtrGuXfbyyBniKykOWQWGqwwMA7QiYAxi+IlPdqo+hYHnUt5ZPfnsHJyNiDtnpJyayNBkF6cWoYGAMY92U2hXHF/C1M8uP/ZtYdiuj26UdAdQQSXQErwSOMzt/XWRWAz5GuSBIkwG1H3FabJ2OsUOUhGC6tK4EMtJO0ttC6IBD3kM0ve0tJwMdSfjZo+EEISaeTr9P3wYrGjXqyC1krcKdhMpxEnt5JetoulscpyzhXN5FRpuPHvbeQaKxFAEB6EN+cYN6xD7RYGpXpNndMmZgM5Dcs3YSNFDHUo2LGfZuukSWyUYirJAdYbF3MfqEKmjM+I2EfhA94iG3L7uKrR+GdWD73ydlIB+6hgref1QTlmgmbM3/LeX5GI1Ux1RWpgxpLuZ2+I+IjzZ8wqE4nilvQdkUdfhzI5QDWy+kw5Wgg2pGpeEVeCCA7b85BO3F9DzxB3cdqvBzWcmzbyMiqhzuYqtHRVG2y4x+KOlnyqla8AoWWpuBoYRxzXrfKuILl6SfiWCbjxoZJUaCBj1CjH7GIaDbc9kqBY3W/Rgjda1iqQcOJu2WW+76pZC9QG7M00dffe9hNnseupFL53r8F7YHSwJWUKP2q+k7RdsxyOB11n0xtOvnW4irMMFNV4H0uqwS5ExsmP9AxbDTc9JwgneAT5vTiUSm1E7BSflSt3bfa1tv8Di3R8n3Af7MNWzs49hmauE2wP+ttrq+AsWpFG2awvsuOqbipWHgtuvuaAE+A1Z/7gC9hesnr+7wqCwG8c5yAg3AL1fm8T9AZtp/bbJGwl1pNrE7RuOX7PeMRUERVaPpEs+yqeoSmuOlokqw49pgomjLeh7icHNlG19yjs6XXOMedYm5xH2YxpV2tc0Ro2jJfxC50ApuxGob7lMsxfTbeUv07TyYxpeLucEH1gNd4IKH2LAg5TdVhlCafZvpskfncCfx8pOhJzd76bJWeYFnFciwcYfubRc12Ip/ppIhA1/mSZ/RxjFDrJC5xifFjJpY2Xl5zXdguFqYyTR1zSp1Y9p+tktDYYSNflcxI0iyO4TPBdlRcpeqjK/piF5bklq77VSEaA+z8qmJTFzIWiitbnzR794USKBUaT0NTEsVjZqLaFVqJoPN9ODG70IPbfBHKK+/q/AWR0tJzYHRULOa4MP+W/HfGadZUbfw177G7j/OGbIs8TahLyynl4X4RinF793Oz+BU0saXtUHrVBFT/DnA3ctNPoGbs4hRIjTok8i+algT1lTHi4SxFvONKNrgQFAq2/gFnWMXgwffgYMJpiKYkmW3tTg3ZQ9Jq+f8XN+A5eeUKHWvJWJ2sgJ1Sop+wwhqFVijqWaJhwtD8MNlSBeWNNWTa5Z5kPZw5+LbVT99wqTdx29lMUH4OIG/D86ruKEauBjvH5xy6um/Sfj7ei6UUVk4AIl3MyD4MSSTOFgSwsH/QJWaQ5as7ZcmgBZkzjjU1UrQ74ci1gWBCSGHtuV1H2mhSnO3Wp/3fEV5a+4wz//6qy8JxjZsmxxy5+4w9CDNJY09T072iKG0EnOS0arEYgXqYnXcYHwjTtUNAcMelOd4xpkoqiTYICWFq0JSiPfPDQdnt+4/wuqcXY47QILbgAAAABJRU5ErkJggg==');
+            opacity: 0.05;
+            pointer-events: none;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .form-page {
+                padding: 1em;
+                margin: 1em;
+            }
+
+            .form-group input[type="text"],
+            .form-group input[type="email"],
+            .form-group input[type="date"],
+            .form-group input[type="number"],
+            .form-group select,
+            .form-group textarea {
+                font-size: 16px; /* Prevents zoom on iOS */
+            }
+
+            .next-btn {
+                width: 100%;
+                margin-top: 1em;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.8; }
+            100% { opacity: 1; }
+        }
+
+        @keyframes glitch {
+            0% { transform: translate(0) }
+            20% { transform: translate(-1px, 1px) }
+            40% { transform: translate(-1px, -1px) }
+            60% { transform: translate(1px, 1px) }
+            80% { transform: translate(1px, -1px) }
+            100% { transform: translate(0) }
+        }
+    </style>
+</head>
+<body>
+    <!-- State Header -->
+    <div id="state-header">
+        <div class="header-content">
+            <div class="header-left">
+                <img src="img/ca_logo.png" alt="State of California Seal">
+                <div>
+                    <strong>State of California</strong><br>
+                    Department of Administrative Compliance and Intake Coordination<br>
+                    Public Access Questionnaire Portal (PAQP)
+                </div>
+            </div>
+            <div class="header-right">
+                <strong>Gavin Newsom</strong><br>
+                Governor, State of California
+            </div>
+        </div>
+    </div>
+
+    <!-- State Disclaimer -->
+    <p class="state-disclaimer">
+        <em>Form Series 4107-D, Issued under State Operational Directive 22-431</em><br>
+        Participation in this instrument is voluntary under Section 13(b) of the Behavioral User Assessment Review Act (California Government Code § 17910.6). Your input assists in the continual optimization of intake resource pathways and procedural audit frameworks.
+    </p>
+
+    <div class="container">
+        <!-- Official Banner -->
+        <div id="officialBanner">
+            <h1>State of California</h1>
+            <h2>Department of Civic Interface & Response Aggregation (CIRA)</h2>
+            <p><strong>Form No. CA-CIRA-Q17.08 (Rev. 3.1)</strong></p>
+            <p>This survey is administered by the Department of Civic Interface & Response Aggregation (CIRA), a supplemental subdivision of the State User Relations Working Group under California Government Code §115.03b.</p>
+            <p><strong>NOTICE:</strong> This intake and calibration survey is nonmandatory and confidential. Your participation contributes to ongoing civic interface testing and improved response normalization.</p>
+            <p>Please complete all fields before continuing to the next section. The questionnaire should take approximately 3–5 minutes. Do not refresh your browser.</p>
+            <p><em>All responses are used for internal calibration purposes only.</em></p>
+        </div>
+
+        <!-- Bureaucratic Phase (Pages 1-7) -->
+        <div id="bureaucratic-phase">
+            <!-- Page 1: Basic Identification -->
+            <section id="page1" class="form-page active" aria-labelledby="page1-title">
+                <h2 id="page1-title">Section 1: Basic Identification</h2>
+                <div class="form-group">
+                    <label for="legalName">Full Legal Name</label>
+                    <input type="text" id="legalName" name="legalName" required aria-required="true">
+                    <div class="error" id="legalName-error">Please enter your full legal name</div>
+                </div>
+                <div class="form-group">
+                    <label for="preferredName">Preferred Name (if different)</label>
+                    <input type="text" id="preferredName" name="preferredName">
+                </div>
+                <div class="form-group">
+                    <label for="age">Age</label>
+                    <input type="number" id="age" name="age" min="13" max="120" required aria-required="true">
+                    <div class="error" id="age-error">Please enter a valid age between 13 and 120</div>
+                </div>
+                <div class="form-group">
+                    <label for="pronouns">Pronouns</label>
+                    <select id="pronouns" name="pronouns" required aria-required="true">
+                        <option value="">Select...</option>
+                        <option value="he/him">He/Him</option>
+                        <option value="she/her">She/Her</option>
+                        <option value="they/them">They/Them</option>
+                        <option value="other">Other</option>
+                    </select>
+                    <div class="error" id="pronouns-error">Please select your pronouns</div>
+                </div>
+                <div class="form-group">
+                    <label for="dob">Date of Birth</label>
+                    <input type="date" id="dob" name="dob" required aria-required="true">
+                    <div class="error" id="dob-error">Please enter your date of birth</div>
+                </div>
+                <button type="button" class="next-btn" onclick="validateAndProceed(1)" aria-label="Continue to Section 2">Continue to Section 2</button>
+            </section>
+
+            <!-- Page 2: Contact Information -->
+            <section id="page2" class="form-page">
+                <h2>Section 2: Contact Information</h2>
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" required>
+                    <div class="error" id="email-error">Please enter a valid email address</div>
+                </div>
+                <button type="button" class="next-btn" onclick="validateAndProceed(2)">Continue to Section 3</button>
+            </section>
+
+            <!-- Page 3: Personality Snapshot -->
+            <section id="page3" class="form-page">
+                <h2>Section 3: Personality Snapshot</h2>
+                <div class="form-group">
+                    <label for="freeTime">How do you spend most of your free time?</label>
+                    <textarea id="freeTime" name="freeTime" rows="3" required></textarea>
+                    <div class="error" id="freeTime-error">Please describe how you spend your free time</div>
+                </div>
+                <div class="form-group">
+                    <label for="sleepDifficulty">How often do you find it difficult to sleep?</label>
+                    <select id="sleepDifficulty" name="sleepDifficulty" required>
+                        <option value="">Select...</option>
+                        <option value="never">Never</option>
+                        <option value="rarely">Rarely</option>
+                        <option value="sometimes">Sometimes</option>
+                        <option value="often">Often</option>
+                        <option value="veryOften">Very Often</option>
+                    </select>
+                    <div class="error" id="sleepDifficulty-error">Please select an option</div>
+                </div>
+                <div class="form-group">
+                    <label>Do you consider yourself more logical or emotional?</label>
+                    <div class="radio-group">
+                        <label>
+                            <input type="radio" name="thinkingStyle" value="logical" required>
+                            More Logical
+                        </label>
+                        <label>
+                            <input type="radio" name="thinkingStyle" value="emotional">
+                            More Emotional
+                        </label>
+                        <label>
+                            <input type="radio" name="thinkingStyle" value="balanced">
+                            Balanced
+                        </label>
+                    </div>
+                    <div class="error" id="thinkingStyle-error">Please select an option</div>
+                </div>
+                <div class="form-group">
+                    <label for="satisfaction">Rate your overall satisfaction with your life right now</label>
+                    <div class="range-group">
+                        <input type="range" id="satisfaction" name="satisfaction" min="1" max="10" value="5" required>
+                        <span id="satisfaction-value">5</span>
+                    </div>
+                    <div class="error" id="satisfaction-error">Please rate your satisfaction</div>
+                </div>
+                <button type="button" class="next-btn" onclick="validateAndProceed(3)">Continue to Section 4</button>
+            </section>
+
+            <!-- Page 4: Preference Calibration -->
+            <section id="page4" class="form-page">
+                <h2>Section 4: Preference Calibration</h2>
+                <div class="form-group">
+                    <label>Preferred time of day?</label>
+                    <div class="radio-group">
+                        <label>
+                            <input type="radio" name="timePreference" value="morning" required>
+                            Morning
+                        </label>
+                        <label>
+                            <input type="radio" name="timePreference" value="afternoon">
+                            Afternoon
+                        </label>
+                        <label>
+                            <input type="radio" name="timePreference" value="night">
+                            Night
+                        </label>
+                        <label>
+                            <input type="radio" name="timePreference" value="other">
+                            Other
+                        </label>
+                    </div>
+                    <div class="error" id="timePreference-error">Please select your preferred time of day</div>
+                </div>
+                <div class="form-group">
+                    <label for="favoriteSeason">Favorite season?</label>
+                    <select id="favoriteSeason" name="favoriteSeason" required>
+                        <option value="">Select...</option>
+                        <option value="spring">Spring</option>
+                        <option value="summer">Summer</option>
+                        <option value="fall">Fall</option>
+                        <option value="winter">Winter</option>
+                    </select>
+                    <div class="error" id="favoriteSeason-error">Please select your favorite season</div>
+                </div>
+                <div class="form-group">
+                    <label>Do you prefer audio, visual, or written experiences?</label>
+                    <div class="radio-group">
+                        <label>
+                            <input type="radio" name="experiencePreference" value="audio" required>
+                            Audio
+                        </label>
+                        <label>
+                            <input type="radio" name="experiencePreference" value="visual">
+                            Visual
+                        </label>
+                        <label>
+                            <input type="radio" name="experiencePreference" value="written">
+                            Written
+                        </label>
+                    </div>
+                    <div class="error" id="experiencePreference-error">Please select your preference</div>
+                </div>
+                <div class="form-group">
+                    <label for="techChange">If you could change one thing about modern technology, what would it be?</label>
+                    <textarea id="techChange" name="techChange" rows="3" required></textarea>
+                    <div class="error" id="techChange-error">Please share your thoughts</div>
+                </div>
+                <button type="button" class="next-btn" onclick="validateAndProceed(4)">Continue to Section 5</button>
+            </section>
+
+            <!-- Page 5: Environment Familiarity -->
+            <section id="page5" class="form-page">
+                <h2>Section 5: Environment Familiarity</h2>
+                <div class="form-group">
+                    <label for="currentLocation">Where are you currently?</label>
+                    <input type="text" id="currentLocation" name="currentLocation" required>
+                    <div class="error" id="currentLocation-error">Please enter your current location</div>
+                </div>
+                <div class="form-group">
+                    <label>Are you alone right now?</label>
+                    <div class="radio-group">
+                        <label>
+                            <input type="radio" name="alone" value="yes" required>
+                            Yes
+                        </label>
+                        <label>
+                            <input type="radio" name="alone" value="no">
+                            No
+                        </label>
+                        <label>
+                            <input type="radio" name="alone" value="notSure">
+                            Not Sure
+                        </label>
+                    </div>
+                    <div class="error" id="alone-error">Please select an option</div>
+                </div>
+                <div class="form-group">
+                    <label for="roomDescription">Describe the room you're in</label>
+                    <textarea id="roomDescription" name="roomDescription" rows="3" required></textarea>
+                    <div class="error" id="roomDescription-error">Please describe your room</div>
+                </div>
+                <div class="form-group">
+                    <label for="nearestObject">What is the nearest object to your left?</label>
+                    <input type="text" id="nearestObject" name="nearestObject" required>
+                    <div class="error" id="nearestObject-error">Please describe the nearest object</div>
+                </div>
+                <button type="button" class="next-btn" onclick="validateAndProceed(5)">Continue to Section 6</button>
+            </section>
+
+            <!-- Page 6: Mild UX Friction -->
+            <section id="page6" class="form-page">
+                <h2>Section 6: Personal Characteristics</h2>
+                <div class="form-group">
+                    <label>Select any number of words that describe you:</label>
+                    <div class="checkbox-group">
+                        <label>
+                            <input type="checkbox" name="traits" value="curious">
+                            Curious
+                        </label>
+                        <label>
+                            <input type="checkbox" name="traits" value="analytical">
+                            Analytical
+                        </label>
+                        <label>
+                            <input type="checkbox" name="traits" value="adaptable">
+                            Adaptable
+                        </label>
+                        <label>
+                            <input type="checkbox" name="traits" value="reserved">
+                            Reserved
+                        </label>
+                        <label>
+                            <input type="checkbox" name="traits" value="intuitive">
+                            Intuitive
+                        </label>
+                        <label>
+                            <input type="checkbox" name="traits" value="practical">
+                            Practical
+                        </label>
+                    </div>
+                    <div class="error" id="traits-error">Please select at least one trait</div>
+                </div>
+                <div class="form-group">
+                    <label>Have you ever completed a questionnaire like this before?</label>
+                    <div class="radio-group">
+                        <label>
+                            <input type="radio" name="previousQuestionnaire" value="yes" required>
+                            Yes
+                        </label>
+                        <label>
+                            <input type="radio" name="previousQuestionnaire" value="no">
+                            No
+                        </label>
+                    </div>
+                    <div class="error" id="previousQuestionnaire-error">Please select an option</div>
+                </div>
+                <div class="form-group">
+                    <label for="questionnaireReason">Why or why not?</label>
+                    <textarea id="questionnaireReason" name="questionnaireReason" rows="3" required></textarea>
+                    <div class="error" id="questionnaireReason-error">Please explain your answer</div>
+                </div>
+                <button type="button" class="next-btn" onclick="validateAndProceed(6)">Continue to Section 7</button>
+            </section>
+
+            <!-- Page 7: Behavioral Audit -->
+            <section id="page7" class="form-page">
+                <h2>Section 7: Behavioral Audit</h2>
+                <div class="form-group">
+                    <label for="regret">What is something you regret not doing this week?</label>
+                    <textarea id="regret" name="regret" rows="3" required></textarea>
+                    <div class="error" id="regret-error">Please share your thoughts</div>
+                </div>
+                <div class="form-group">
+                    <label for="lastEyeContact">When was the last time you made eye contact with someone?</label>
+                    <input type="date" id="lastEyeContact" name="lastEyeContact" required>
+                    <div class="error" id="lastEyeContact-error">Please select a date</div>
+                </div>
+                <div class="form-group">
+                    <label>Would you describe yourself as consistent?</label>
+                    <div class="radio-group">
+                        <label>
+                            <input type="radio" name="consistency" value="yes" required>
+                            Yes
+                        </label>
+                        <label>
+                            <input type="radio" name="consistency" value="no">
+                            No
+                        </label>
+                        <label>
+                            <input type="radio" name="consistency" value="sometimes">
+                            Sometimes
+                        </label>
+                    </div>
+                    <div class="error" id="consistency-error">Please select an option</div>
+                </div>
+                <button type="button" class="next-btn" onclick="validateAndProceed(7)">Continue to Section 8</button>
+            </section>
+        </div>
+
+        <!-- Horror Phase (Pages 8-20) -->
+        <div id="horror-phase" style="display: none;">
+            <!-- Page 8: Personal Info (First Horror Page) -->
+            <section id="page8" class="form-section static-bg" aria-labelledby="page8-title">
+                <h1 id="page8-title" class="terminal-text">WeLc0me b4ck to surve1ll4nce...</h1>
+                <div class="form-group">
+                    <label for="horror-name" class="terminal-text">Which designation do you prefer?</label>
+                    <input type="text" id="horror-name" name="horror-name" required aria-required="true">
+                    <div class="error" id="horror-name-error">Designation required</div>
+                </div>
+                <div class="form-group">
+                    <label for="horror-color" class="terminal-text">Which color lingers in your mind?</label>
+                    <select id="horror-color" name="horror-color" required aria-required="true">
+                        <option value="">Select a color...</option>
+                        <option value="red">Red</option>
+                        <option value="blue">Blue</option>
+                        <option value="green">Green</option>
+                        <option value="yellow">Yellow</option>
+                        <option value="purple">Purple</option>
+                        <option value="elder-purple">Elder Purple</option>
+                        <option value="midnight-red">Midnight Red</option>
+                    </select>
+                    <div class="error" id="horror-color-error">Color selection required</div>
+                </div>
+                <button type="button" class="next-btn" onclick="validateAndProceed(8)" aria-label="Continue to next section">Next</button>
+            </section>
+
+            <!-- Page 9: Hobbies -->
+            <section id="page9" class="form-section">
+                <h1 class="terminal-text">Pattern Analysis</h1>
+                <div class="form-group">
+                    <label class="terminal-text">Select all that you enjoy:</label>
+                    <div class="radio-group">
+                        <label>
+                            <input type="checkbox" name="hobbies" value="painting">
+                            Painting
+                        </label>
+                        <label>
+                            <input type="checkbox" name="hobbies" value="hiking">
+                            Hiking
+                        </label>
+                        <label>
+                            <input type="checkbox" name="hobbies" value="music">
+                            Music
+                        </label>
+                        <label>
+                            <input type="checkbox" name="hobbies" value="figures">
+                            Figures
+                        </label>
+                    </div>
+                </div>
+                <button onclick="validateAndProceed(9)">Next</button>
+            </section>
+
+            <!-- Page 10: Fears -->
+            <section id="page10" class="form-section">
+                <h1 class="terminal-text">Understanding You</h1>
+                <div class="form-group">
+                    <label for="fear" class="terminal-text">What waits in the dark?</label>
+                    <textarea id="fear" name="fear" rows="3" required placeholder="Describe what you see when you close your eyes..."></textarea>
+                    <div class="error" id="fear-error">Response required</div>
+                </div>
+                <button onclick="validateAndProceed(10)">Next</button>
+            </section>
+
+            <!-- Page 11: Memories -->
+            <section id="page11" class="form-section">
+                <h1 class="terminal-text">Memory Analysis</h1>
+                <div class="form-group">
+                    <label for="memory" class="terminal-text">Recall your earliest memory:</label>
+                    <textarea id="memory" name="memory" rows="4" required placeholder="What do you remember from before..."></textarea>
+                    <div class="error" id="memory-error">Memory required</div>
+                </div>
+                <div class="form-group">
+                    <label class="terminal-text">How does this memory make you feel?</label>
+                    <div class="radio-group">
+                        <label>
+                            <input type="radio" name="memory-feeling" value="happy" required>
+                            Happy
+                        </label>
+                        <label>
+                            <input type="radio" name="memory-feeling" value="sad">
+                            Sad
+                        </label>
+                        <label>
+                            <input type="radio" name="memory-feeling" value="odd">
+                            Odd
+                        </label>
+                        <label>
+                            <input type="radio" name="memory-feeling" value="forgotten">
+                            I can't remember
+                        </label>
+                    </div>
+                    <div class="error" id="memory-feeling-error">Response required</div>
+                </div>
+                <button onclick="validateAndProceed(11)">Next</button>
+            </section>
+
+            <!-- Page 12: Present State -->
+            <section id="page12" class="form-section">
+                <h1 class="terminal-text">Current State</h1>
+                <div class="form-group">
+                    <label class="terminal-text">Are you alone in this room?</label>
+                    <div class="radio-group">
+                        <label>
+                            <input type="radio" name="alone" value="yes" required>
+                            Yes
+                        </label>
+                        <label>
+                            <input type="radio" name="alone" value="no">
+                            No
+                        </label>
+                    </div>
+                    <div class="error" id="alone-error">Response required</div>
+                </div>
+                <div id="alone-message" style="display: none; margin-top: 20px; color: #666; font-style: italic;"></div>
+                <button onclick="validateAndProceed(12)">Next</button>
+            </section>
+
+            <!-- Page 13: Identity -->
+            <section id="page13" class="form-section">
+                <h1>Self-Reflection</h1>
+                <div class="form-group">
+                    <label>Pick a trait that describes you:</label>
+                    <div class="radio-group">
+                        <label>
+                            <input type="radio" name="trait" value="curious" required>
+                            Curious
+                        </label>
+                        <label>
+                            <input type="radio" name="trait" value="brave">
+                            Brave
+                        </label>
+                        <label>
+                            <input type="radio" name="trait" value="naive">
+                            Naïve
+                        </label>
+                        <label>
+                            <input type="radio" name="trait" value="lonely">
+                            Lonely
+                        </label>
+                        <label>
+                            <input type="radio" name="trait" value="other">
+                            Other
+                        </label>
+                    </div>
+                    <div class="error" id="trait-error">Please select a trait</div>
+                </div>
+                <div id="other-trait" class="form-group" style="display: none;">
+                    <label for="other-trait-input">Describe yourself:</label>
+                    <input type="text" id="other-trait-input" name="other-trait-input">
+                </div>
+                <button onclick="validateAndProceed(13)">Next</button>
+            </section>
+
+            <!-- Page 14: Random Choice -->
+            <section id="page14" class="form-section">
+                <h1>Symbol Analysis</h1>
+                <div class="form-group">
+                    <label>Choose a symbol you feel drawn to:</label>
+                    <div class="radio-group symbol-group">
+                        <label class="symbol-label">
+                            <input type="radio" name="symbol" value="star" required>
+                            ★
+                        </label>
+                        <label class="symbol-label">
+                            <input type="radio" name="symbol" value="yin-yang">
+                            ☯
+                        </label>
+                        <label class="symbol-label">
+                            <input type="radio" name="symbol" value="skull">
+                            ☠
+                        </label>
+                        <label class="symbol-label">
+                            <input type="radio" name="symbol" value="music">
+                            ♫
+                        </label>
+                    </div>
+                    <div class="error" id="symbol-error">Please select a symbol</div>
+                </div>
+                <div class="form-group">
+                    <label for="number">Pick a number from 1–4:</label>
+                    <select id="number" name="number" required>
+                        <option value="">Select...</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                    </select>
+                    <div class="error" id="number-error">Please select a number</div>
+                </div>
+                <button onclick="validateAndProceed(14)">Next</button>
+            </section>
+
+            <!-- Page 15: The Form Glitches -->
+            <section id="page15" class="form-section static-bg">
+                <h1 class="glitch-text" data-text="Processing Your Responses">Processing Your Responses</h1>
+                <div class="form-group">
+                    <p id="processing-text" class="terminal-text">System processing your choices... please wait.</p>
+                    <div id="continue-button-container" style="text-align: center; margin-top: 20px;">
+                        <button id="continue-button" onclick="handleContinueClick()" class="glitch-text">Continue</button>
+                        <span id="attempt-counter" class="terminal-text" style="display: none;">(2 attempts remaining)</span>
+                    </div>
+                    <div id="secret-code-container" style="display: none; margin-top: 20px;">
+                        <label for="secret-code" class="terminal-text">Enter the secret code:</label>
+                        <input type="text" id="secret-code" name="secret-code" class="terminal-text">
+                        <div class="error" id="secret-code-error">Code required</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Page 16: Echoes -->
+            <section id="page16" class="form-section">
+                <h1 class="glitch-text" data-text="Final Analysis">Final Analysis</h1>
+                <div class="form-group">
+                    <label for="description" class="terminal-text">Describe what you see on this screen:</label>
+                    <textarea id="description" name="description" rows="4" required class="terminal-text"></textarea>
+                    <div class="error" id="description-error">Description required</div>
+                </div>
+                <div id="echo-message" class="blood-text" style="display: none; margin-top: 20px;"></div>
+                <button onclick="validateAndProceed(16)" class="glitch-text">Submit Description</button>
+            </section>
+
+            <!-- Page 17: The Warning -->
+            <section id="page17" class="form-section static-bg">
+                <h1 class="blood-text">System Message</h1>
+                <div class="form-group">
+                    <div id="warning-text" class="warning-text blood-text typewriter"></div>
+                    <div id="warning-button" style="display: none; text-align: center; margin-top: 20px;">
+                        <button onclick="validateAndProceed(17)" class="blood-text">Continue</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Page 18: Voice of the Machine -->
+            <section id="page18" class="form-section">
+                <h1 class="blood-text">System Response</h1>
+                <div class="form-group">
+                    <div class="chat-container">
+                        <div class="system-message blood-text">[REDACTED] detected...</div>
+                        <div class="user-input-container">
+                            <label for="plea" class="terminal-text">Type anything to plead:</label>
+                            <input type="text" id="plea" name="plea" required class="terminal-text">
+                            <div class="error" id="plea-error">Response required</div>
+                        </div>
+                        <div class="system-response blood-text" style="display: none;">Connection unstable...</div>
+                    </div>
+                    <button onclick="validateAndProceed(18)" class="blood-text">Submit</button>
+                </div>
+            </section>
+
+            <!-- Page 19: Labyrinth -->
+            <section id="page19" class="form-section">
+                <h1 class="blood-text">Final Choice</h1>
+                <div class="form-group">
+                    <label class="terminal-text">What will you do?</label>
+                    <div class="radio-group escape-options">
+                        <label class="glitch-text">
+                            <input type="radio" name="escape" value="hide" required>
+                            Hide
+                        </label>
+                        <label class="glitch-text">
+                            <input type="radio" name="escape" value="run">
+                            Run
+                        </label>
+                        <label class="glitch-text">
+                            <input type="radio" name="escape" value="surrender">
+                            Surrender
+                        </label>
+                    </div>
+                    <div class="error" id="escape-error">Choice required</div>
+                </div>
+                <button onclick="validateAndProceed(19)" class="blood-text">Next</button>
+            </section>
+
+            <!-- Page 20: Final Revelation -->
+            <section id="page20" class="form-section static-bg">
+                <h1 class="blood-text">Revelation</h1>
+                <div class="form-group">
+                    <div id="final-text" class="final-text blood-text"></div>
+                    <div id="restart-button" style="display: none; text-align: center; margin-top: 20px;">
+                        <button onclick="location.reload()" class="blood-text">Start Over</button>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <script>
+        /**
+         * User response storage object
+         * Tracks all user inputs throughout the experience
+         */
+        const userResponses = {
+            // Bureaucratic phase responses
+            legalName: '',
+            preferredName: '',
+            age: '',
+            pronouns: '',
+            dob: '',
+            email: '',
+            freeTime: '',
+            sleepDifficulty: '',
+            thinkingStyle: '',
+            satisfaction: '',
+            timePreference: '',
+            favoriteSeason: '',
+            experiencePreference: '',
+            techChange: '',
+            currentLocation: '',
+            alone: '',
+            roomDescription: '',
+            nearestObject: '',
+            traits: [],
+            previousQuestionnaire: '',
+            questionnaireReason: '',
+            regret: '',
+            lastEyeContact: '',
+            consistency: '',
+            
+            // Horror phase responses
+            name: '',
+            color: '',
+            toy: '',
+            hobbies: [],
+            fear: '',
+            memory: '',
+            memoryFeeling: '',
+            trait: '',
+            otherTrait: '',
+            symbol: '',
+            number: '',
+            secretCode: '',
+            description: '',
+            plea: '',
+            escape: ''
+        };
+
+        /**
+         * Initialize page and set up event handlers
+         */
+        $(document).ready(function() {
+            // Hide all pages except the first one
+            $('.form-page, .form-section').hide();
+            $('#page1').show();
+            $('#horror-phase').hide();
+
+            // Set up all our event handlers
+            setupColorEffects();
+            setupMonsterEffects();
+            setupFearEffects();
+            setupMemoryEffects();
+            setupAloneEffects();
+            setupTraitEffects();
+            setupSymbolEffects();
+            setupNumberEffects();
+            setupDescriptionEffects();
+
+            // Add event listeners for page transitions
+            $('#page17').on('show', function() {
+                revealWarningText();
+            });
+
+            $('#page20').on('show', function() {
+                revealFinalText();
+            });
+
+            // Add smooth scroll to top on page transition
+            $('.next-btn').click(function() {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+
+            // Store form data in localStorage
+            $('input, select, textarea').on('change', function() {
+                const id = $(this).attr('id');
+                if (id) {
+                    localStorage.setItem(id, $(this).val());
+                }
+            });
+
+            // Restore form data from localStorage
+            $('input, select, textarea').each(function() {
+                const id = $(this).attr('id');
+                if (id) {
+                    const savedValue = localStorage.getItem(id);
+                    if (savedValue) {
+                        $(this).val(savedValue);
+                    }
+                }
+            });
+        });
+
+        /**
+         * Validate current page and proceed to next
+         */
+        function validateAndProceed(currentPage) {
+            let isValid = true;
+            
+            // Get all required fields in current page
+            const currentPageElement = $(`#page${currentPage}`);
+            const requiredFields = currentPageElement.find('[required]');
+            
+            // Validate each required field
+            requiredFields.each(function() {
+                const field = $(this);
+                const errorElement = $(`#${field.attr('id')}-error`);
+                
+                if (!field.val()) {
+                    errorElement.show();
+                    isValid = false;
+                } else {
+                    errorElement.hide();
+                }
+            });
+
+            if (isValid) {
+                // Store current page data
+                currentPageElement.find('input, select, textarea').each(function() {
+                    const id = $(this).attr('id');
+                    if (id) {
+                        userResponses[id] = $(this).val();
+                    }
+                });
+
+                // Handle transition to horror phase
+                if (currentPage === 7) {
+                    $('#bureaucratic-phase').fadeOut(400, function() {
+                        $('#horror-phase').fadeIn(400);
+                        $('#page8').fadeIn(400);
+                    });
+                } else {
+                    // Normal page transition
+                    currentPageElement.fadeOut(400, function() {
+                        $(`#page${currentPage + 1}`).fadeIn(400);
+                    });
+                }
+                
+                // Scroll to top
+                window.scrollTo(0, 0);
+            }
+        }
+
+        /**
+         * Set up color dropdown effects
+         * 
+         * I wanted to add some subtle foreshadowing here
+         * The "elder-purple" and "midnight-red" options are a bit creepy
+         */
+        function setupColorEffects() {
+            $('#color').on('change', function() {
+                if (this.value === 'elder-purple' || this.value === 'midnight-red') {
+                    $(this).addClass('glitch');
+                    setTimeout(() => $(this).removeClass('glitch'), 1000);
+                }
+            });
+        }
+
+        /**
+         * Set up monster option effects
+         * 
+         * This is where things start to get weird...
+         * The "Monsters" option is a hint of what's to come
+         */
+        function setupMonsterEffects() {
+            $('input[value="monsters"]').on('change', function() {
+                if (this.checked) {
+                    $(this).closest('label').addClass('glitch');
+                    setTimeout(() => $(this).closest('label').removeClass('glitch'), 1000);
+                }
+            });
+        }
+
+        /**
+         * Set up fear textarea effects with expanded triggers
+         */
+        function setupFearEffects() {
+            const fearTriggers = ['darkness', 'night', 'abyss', 'unknown', 'void'];
+            $('#fear').on('input', function() {
+                const text = this.value.toLowerCase();
+                if (fearTriggers.some(trigger => text.includes(trigger))) {
+                    // Subtle background flicker instead of full black
+                    $('body').css('background-color', '#111');
+                    setTimeout(() => $('body').css('background-color', '#f0f0f0'), 100);
+                }
+            });
+        }
+
+        /**
+         * Set up memory textarea effects
+         * 
+         * This was fun to implement! I used Math.random() to create
+         * random glitch effects while typing. It makes the form feel
+         * like it's "watching" what you type.
+         */
+        function setupMemoryEffects() {
+            $('#memory').on('input', function() {
+                if (Math.random() < 0.1) { // 10% chance of glitch
+                    const originalText = this.value;
+                    setTimeout(() => {
+                        this.value = originalText.split('').map(char => 
+                            Math.random() < 0.3 ? String.fromCharCode(char.charCodeAt(0) + 1) : char
+                        ).join('');
+                        setTimeout(() => {
+                            this.value = originalText;
+                        }, 100);
+                    }, 0);
+                }
+            });
+        }
+
+        /**
+         * Set up "not alone" effects with subtle shadow
+         */
+        function setupAloneEffects() {
+            $('input[name="alone"][value="no"]').on('change', function() {
+                if (this.checked) {
+                    // Create shadow element
+                    const shadow = $('<div class="shadow-overlay"></div>');
+                    $('body').append(shadow);
+                    
+                    // Animate shadow across screen
+                    shadow.css({
+                        position: 'fixed',
+                        top: 0,
+                        left: '-100px',
+                        width: '50px',
+                        height: '100vh',
+                        background: 'linear-gradient(to right, rgba(0,0,0,0.8), transparent)',
+                        pointerEvents: 'none',
+                        zIndex: 1000
+                    }).animate({
+                        left: '100vw'
+                    }, 1000, function() {
+                        $(this).remove();
+                    });
+                }
+            });
+        }
+
+        /**
+         * Set up trait selection effects
+         * 
+         * Each trait has its own visual effect
+         * I used an object to map traits to their effects
+         * This makes it easy to add new traits later
+         */
+        function setupTraitEffects() {
+            $('input[name="trait"]').on('change', function() {
+                if (this.value === 'other') {
+                    $('#other-trait').slideDown();
+                } else {
+                    $('#other-trait').slideUp();
+                }
+
+                const effects = {
+                    'curious': () => $('h1').text('Self-Reflection?'),
+                    'brave': () => $('.container').css('box-shadow', '0 0 20px #ff0000'),
+                    'naive': () => $('body').css('filter', 'blur(1px)'),
+                    'lonely': () => $('.container').css('background-color', '#f0f0f0')
+                };
+
+                if (effects[this.value]) {
+                    effects[this.value]();
+                    setTimeout(() => {
+                        $('h1').text('Self-Reflection');
+                        $('.container').css('box-shadow', '0 2px 4px rgba(0,0,0,0.1)');
+                        $('body').css('filter', 'none');
+                        $('.container').css('background-color', '#fff');
+                    }, 1000);
+                }
+            });
+
+            // This was a fun effect - the placeholder text is reversed
+            $('#other-trait-input').on('input', function() {
+                if (this.value.length > 0) {
+                    const reversed = this.value.split('').reverse().join('');
+                    $(this).attr('placeholder', reversed);
+                }
+            });
+        }
+
+        /**
+         * Set up symbol effects
+         * 
+         * The symbols are a key part of the story
+         * I added hover effects to make them more interactive
+         */
+        function setupSymbolEffects() {
+            $('.symbol-label').hover(
+                function() {
+                    $(this).css('transform', 'scale(1.2)');
+                    if (Math.random() < 0.3) {
+                        $(this).addClass('glitch');
+                        setTimeout(() => $(this).removeClass('glitch'), 500);
+                    }
+                },
+                function() {
+                    $(this).css('transform', 'scale(1)');
+                }
+            );
+        }
+
+        /**
+         * Set up number selection effects
+         * 
+         * Simple fade effect when selecting a number
+         * I wanted to keep this subtle
+         */
+        function setupNumberEffects() {
+            $('#number').on('change', function() {
+                $(this).css('opacity', '0.5');
+                setTimeout(() => {
+                    $(this).css('opacity', '1');
+                }, 1000);
+            });
+        }
+
+        /**
+         * Set up description textarea effects
+         * 
+         * This is where the form starts to feel really creepy
+         * It echoes back things you've said earlier
+         */
+        function setupDescriptionEffects() {
+            $('#description').on('input', function() {
+                const text = this.value;
+                if (text.includes(userResponses.name)) {
+                    $('#echo-message').text(`We know your name, ${userResponses.name}...`).fadeIn();
+                }
+                if (text.includes(userResponses.fear)) {
+                    $('#echo-message').text(`Your fear of ${userResponses.fear} is showing...`).fadeIn();
+                }
+                if (text.includes(userResponses.symbol)) {
+                    $('#echo-message').text(`The symbol ${userResponses.symbol} haunts you...`).fadeIn();
+                }
+                
+                // Random glitch effect
+                if (Math.random() < 0.05) {
+                    const originalText = text;
+                    this.value = text.split('').map(char => 
+                        Math.random() < 0.2 ? String.fromCharCode(char.charCodeAt(0) + 1) : char
+                    ).join('');
+                    setTimeout(() => {
+                        this.value = originalText;
+                    }, 100);
+                }
+            });
+        }
+
+        /**
+         * Handle continue button clicks in the processing section
+         */
+        let clickCount = 0;
+        function handleContinueClick() {
+            clickCount++;
+            const button = $('#continue-button');
+            const counter = $('#attempt-counter');
+            
+            // Show attempt counter after first click
+            if (clickCount === 1) {
+                counter.text('(2 attempts remaining)').fadeIn();
+            } else if (clickCount === 2) {
+                counter.text('(1 attempt remaining)');
+            } else if (clickCount === 3) {
+                // After third click, show code and auto-advance
+                $('#secret-code-container').fadeIn();
+                $('#continue-button-container').fadeOut();
+                
+                // Display the code hint
+                const codeHint = $('<div class="terminal-text">Code: 124</div>');
+                $('#secret-code-container').prepend(codeHint);
+                
+                // Auto-advance after delay
+                setTimeout(() => {
+                    $('#secret-code').val('124');
+                    validateAndProceed(15);
+                }, 2000);
+            }
+            
+            // Move button randomly
+            const maxX = window.innerWidth - button.width();
+            const maxY = window.innerHeight - button.height();
+            button.css({
+                position: 'absolute',
+                left: Math.random() * maxX + 'px',
+                top: Math.random() * maxY + 'px'
+            });
+        }
+
+        /**
+         * Reveal warning text with typewriter effect
+         */
+        function revealWarningText() {
+            const warningText = `WARNING: Anomaly detected in user response pattern.\n\nAnalyzing deviation from expected parameters...\n\nConnection unstable. Proceed with caution.`;
+            let index = 0;
+            const warningElement = $('#warning-text');
+
+            function typeWarning() {
+                if (index < warningText.length) {
+                    warningElement.text(warningText.substring(0, index + 1));
+                    index++;
+                    setTimeout(typeWarning, 50);
+                } else {
+                    setTimeout(() => {
+                        $('#warning-button').fadeIn();
+                    }, 1000);
+                }
+            }
+
+            typeWarning();
+        }
+
+        /**
+         * Reveal final text with typewriter effect and personalized content
+         */
+        function revealFinalText() {
+            const escapeChoice = userResponses.escape;
+            const finalMessages = {
+                hide: `You cannot hide from what you've seen, ${userResponses.name}.`,
+                run: `You cannot run from the truth, ${userResponses.name}.`,
+                surrender: `Your surrender is noted, ${userResponses.name}.`
+            };
+
+            const baseMessage = `${finalMessages[escapeChoice]}\n\nThere is no escape.\nWe are one.\n\nIt waits in the dark where you left it, ${userResponses.name}.\nYour ${userResponses.fear} lingers just out of sight.`;
+            let index = 0;
+
+            function typeFinal() {
+                if (index < baseMessage.length) {
+                    $('#final-text').text(baseMessage.substring(0, index + 1));
+                    index++;
+                    setTimeout(typeFinal, 50);
+                } else {
+                    setTimeout(() => {
+                        $('#restart-button').fadeIn();
+                    }, 1000);
+                }
+            }
+
+            typeFinal();
+        }
+
+        // Add range slider value display
+        $('#satisfaction').on('input', function() {
+            $('#satisfaction-value').text(this.value);
+        });
+
+        // Add checkbox validation
+        $('input[name="traits"]').on('change', function() {
+            const checkedCount = $('input[name="traits"]:checked').length;
+            if (checkedCount > 0) {
+                $('#traits-error').hide();
+            } else {
+                $('#traits-error').show();
+            }
+        });
+
+        // Add fade-in animation to specific sections
+        $('#page7, #page12, #page15').addClass('fade-in');
+    </script>
+</body>
+</html> 

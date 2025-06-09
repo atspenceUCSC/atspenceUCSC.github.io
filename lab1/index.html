@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 	<!-- This title is used for tabs and bookmarks -->
-	<title>Lab X - Subject/Topic</title>
+	<title>Lab 1: Getting Started - ART 101</title>
 
 	<!-- Use UTF character set, a good idea with any webpage -->
   	<meta charset="UTF-8" />
@@ -10,9 +10,9 @@
   	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	
 	<!-- Include a sitewide CSS file for consistent styling across the site -->
-	<link rel="stylesheet" type="text/css" href="../css/site.css">
+	<link rel="stylesheet" href="../css/main.css">
 	<!-- Lab-specifc CSS file for any special styling of this particular page -->
-	<link rel="stylesheet" type="text/css" href="css/lab.css">
+	<link rel="stylesheet" href="css/style.css">
 	
 	<!-- load jQuery library to make javascript easier (must be above our lab js)-->
 	<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
@@ -21,32 +21,43 @@
 </head>
 <body>
 	<!-- Style this page by changing the CSS in ../css/site.css or css/lab.css -->
-	<main id="content">
-		<section>
-			<h1>Lab X - Subject/Topic</h1>
-			<div class="minor-section">
-					<h2>Challenge</h2>
-					<p>Restate the challenge of the lab here.</p>
-			</div>
+	<div id="content">
+		<header>
+			<h1>Lab 1: Getting Started</h1>
+			<nav>
+				<a href="../index.html">← Back to Home</a>
+			</nav>
+		</header>
 
-			<div class="minor-section">
-					<h2>Problems</h2>
-					<p>What problems arose? How did you solve them? </p>
-			</div>
+		<main>
+			<article>
+				<h2>Lab Overview</h2>
+				<p class="placeholder">This page will contain my work for Lab 1: Getting Started. Work in progress.</p>
+				
+				<section class="lab-content">
+					<h3>Tasks</h3>
+					<ul>
+						<li>Set up development environment</li>
+						<li>Create basic HTML structure</li>
+						<li>Learn about version control</li>
+					</ul>
+				</section>
 
-			<div class="minor-section">
-					<h2>Reflection</h2>
-					<p>Put your reflections about this assignment here. How did it go? What kind of energy did you put into the assignment? </p>
-			</div>
+				<section class="lab-content">
+					<h3>Notes</h3>
+					<p class="placeholder">TODO: Add my notes and observations here...</p>
+				</section>
 
-			<div class="minor-section">
-					<h2>Results</h2>
-					<div id="output"></div>
-			</div>
-		</section>
-		<nav id="links">
-			<!-- Put links to other pages (including the homepage) here. -->
-		</nav>
-	</main>
+				<section class="lab-content">
+					<h3>Challenges</h3>
+					<p class="placeholder">TODO: Document any challenges encountered...</p>
+				</section>
+			</article>
+		</main>
+
+		<footer>
+			<p>ART 101 - Austin Spencer</p>
+		</footer>
+	</div>
 </body>
 </html>
