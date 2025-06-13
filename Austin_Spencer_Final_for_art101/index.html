@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>State of California - CIRA Survey</title>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://unpkg.com/glitch-canvas@1.0.0/dist/glitch.min.js"></script>
     <style>
         /* Base styles and variables */
         :root {
@@ -16,6 +17,8 @@
             --form-background: #ffffff;
             --heading-font: 'Georgia', serif;
             --body-font: 'Arial', sans-serif;
+            --horror-text: #000000;
+            --horror-glow: rgba(0, 0, 0, 0.2);
         }
 
         /* State Header Styles */
@@ -273,82 +276,152 @@
             background-color: #cc0000;
         }
 
-        /* Enhanced glitch effects */
+        /* Terminal Text - Used sparingly for key messages */
+        .terminal-text {
+            font-family: 'Consolas', 'Monaco', monospace;
+            color: var(--horror-text);
+            text-shadow: 0 0 2px var(--horror-glow);
+            letter-spacing: 0.5px;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            position: relative;
+            z-index: 1;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        /* Form elements in horror phase */
+        #horror-phase {
+            position: relative;
+            z-index: 2;
+            animation: sway 8s ease-in-out infinite;
+        }
+
+        #horror-phase input[type="text"],
+        #horror-phase select,
+        #horror-phase textarea {
+            background-color: transparent;
+            color: var(--horror-text);
+            border: 1px solid var(--horror-text);
+            padding: 10px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            width: 100%;
+            margin-bottom: 15px;
+            position: relative;
+            z-index: 2;
+            animation: float 5s ease-in-out infinite;
+        }
+
+        #horror-phase select option {
+            background-color: #fff;
+            color: var(--horror-text);
+        }
+
+        #horror-phase .form-group {
+            margin-bottom: 25px;
+            position: relative;
+            z-index: 2;
+            animation: float 7s ease-in-out infinite;
+        }
+
+        #horror-phase .next-btn {
+            background-color: transparent;
+            color: var(--horror-text);
+            border: 1px solid var(--horror-text);
+            padding: 10px 20px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 2;
+        }
+
+        #horror-phase .next-btn:hover {
+            background-color: rgba(0, 0, 0, 0.05);
+            box-shadow: 0 0 10px var(--horror-glow);
+        }
+
+        /* Full Page Chromatic Aberration */
+        #horror-phase::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: inherit;
+            mix-blend-mode: multiply;
+            pointer-events: none;
+            z-index: 3;
+            animation: chromatic 8s ease-in-out infinite;
+        }
+
+        /* Floating Animation */
+        @keyframes float {
+            0% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-3px);
+            }
+            100% {
+                transform: translateY(0px);
+            }
+        }
+
+        /* Sway Animation */
+        @keyframes sway {
+            0% {
+                transform: translateX(0px);
+            }
+            25% {
+                transform: translateX(-2px);
+            }
+            75% {
+                transform: translateX(2px);
+            }
+            100% {
+                transform: translateX(0px);
+            }
+        }
+
+        /* Chromatic Aberration Animation */
+        @keyframes chromatic {
+            0% {
+                filter: blur(0px) brightness(1);
+                transform: translateX(0px);
+            }
+            25% {
+                filter: blur(0.3px) brightness(1.02);
+                transform: translateX(-0.5px);
+            }
+            75% {
+                filter: blur(0.3px) brightness(0.98);
+                transform: translateX(0.5px);
+            }
+            100% {
+                filter: blur(0px) brightness(1);
+                transform: translateX(0px);
+            }
+        }
+
+        /* Blood Text - Used only for dramatic moments */
+        .blood-text {
+            color: #ff6b6b;
+            text-shadow: 0 0 5px rgba(255, 107, 107, 0.2);
+            animation: pulse 4s infinite;
+        }
+
+        /* Glitch effect - Used selectively */
         .glitch-text {
             position: relative;
             animation: glitch 0.3s infinite;
-            text-shadow: 2px 2px #ff0000, -2px -2px #00ff00;
+            animation-play-state: paused;
+            color: var(--horror-text);
         }
 
-        .glitch-text::before,
-        .glitch-text::after {
-            content: attr(data-text);
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-        }
-
-        .glitch-text::before {
-            left: 2px;
-            text-shadow: -2px 0 #ff0000;
-            animation: glitch-anim 3s infinite linear alternate-reverse;
-        }
-
-        .glitch-text::after {
-            left: -2px;
-            text-shadow: 2px 0 #00ff00;
-            animation: glitch-anim 2s infinite linear alternate-reverse;
-        }
-
-        @keyframes glitch-anim {
-            0% { clip-path: inset(20% 0 30% 0); }
-            20% { clip-path: inset(60% 0 10% 0); }
-            40% { clip-path: inset(40% 0 50% 0); }
-            60% { clip-path: inset(80% 0 5% 0); }
-            80% { clip-path: inset(10% 0 70% 0); }
-            100% { clip-path: inset(30% 0 20% 0); }
-        }
-
-        .terminal-text {
-            font-family: monospace;
-            color: #00ff00;
-            text-shadow: 0 0 5px #00ff00;
-        }
-
-        .blood-text {
-            color: #ff0000;
-            text-shadow: 0 0 10px #ff0000;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0% { opacity: 1; }
-            50% { opacity: 0.7; }
-            100% { opacity: 1; }
-        }
-
-        /* Typewriter effect */
-        .typewriter {
-            overflow: hidden;
-            border-right: .15em solid #ff0000;
-            white-space: nowrap;
-            margin: 0 auto;
-            letter-spacing: .15em;
-            animation: 
-                typing 3.5s steps(40, end),
-                blink-caret .75s step-end infinite;
-        }
-
-        @keyframes typing {
-            from { width: 0 }
-            to { width: 100% }
-        }
-
-        @keyframes blink-caret {
-            from, to { border-color: transparent }
-            50% { border-color: #ff0000 }
+        .glitch-text:hover {
+            animation-play-state: running;
         }
 
         /* New styles for mundane questionnaire */
@@ -507,73 +580,6 @@
             display: none;
         }
 
-        /* Horror Phase Styles */
-        #horror-phase {
-            background-color: #0a0a0a;
-            color: #e0e0e0;
-        }
-
-        #horror-phase .form-section {
-            background-color: rgba(20, 20, 20, 0.95);
-            border: 1px solid #333;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-        }
-
-        /* Terminal Text - Used sparingly for key messages */
-        .terminal-text {
-            font-family: 'Consolas', 'Monaco', monospace;
-            color: #00ff00;
-            text-shadow: 0 0 5px rgba(0, 255, 0, 0.3);
-            letter-spacing: 0.5px;
-        }
-
-        /* Blood Text - Used only for dramatic moments */
-        .blood-text {
-            color: #ff0000;
-            text-shadow: 0 0 10px rgba(255, 0, 0, 0.3);
-            animation: pulse 4s infinite;
-        }
-
-        /* Glitch effect - Used selectively */
-        .glitch-text {
-            position: relative;
-            animation: glitch 0.3s infinite;
-            animation-play-state: paused;
-        }
-
-        .glitch-text:hover {
-            animation-play-state: running;
-        }
-
-        /* Static noise background - Used for specific sections */
-        .static-bg {
-            background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAMAAAAp4XiDAAAAUVBMVEWFhYWDg4N3d3dtbW17e3t1dXWBgYGHh4d5eXlzc3OLi4ubm5uVlZWPj4+NjY19fX2JiYl/f39ra2uRkZGZmZlpaWmXl5dvb29xcXGTk5NnZ2c8TV1mAAAAG3RSTlNAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEAvEOwtAAAFVklEQVR4XpWWB67c2BUFb3g557T/hRo9/WUMZHlgr4Bg8Z4qQgQJlHI4A8SzFVrapvmTF9O7dmYRFZ60YiBhJRCgh1FYhiLAmdvX0CzTOpNE77ME0Zty/nWWzchDtiqrmQDeuv3powQ5ta2eN0FY0InkqDD73lT9c9lEzwUNqgFHs9VQce3TVClFCQrSTfOiYkVJQBmpbq2L6iZavPnAPcoU0dSw0SUTqz/GtrGuXfbyyBniKykOWQWGqwwMA7QiYAxi+IlPdqo+hYHnUt5ZPfnsHJyNiDtnpJyayNBkF6cWoYGAMY92U2hXHF/C1M8uP/ZtYdiuj26UdAdQQSXQErwSOMzt/XWRWAz5GuSBIkwG1H3FabJ2OsUOUhGC6tK4EMtJO0ttC6IBD3kM0ve0tJwMdSfjZo+EEISaeTr9P3wYrGjXqyC1krcKdhMpxEnt5JetoulscpyzhXN5FRpuPHvbeQaKxFAEB6EN+cYN6xD7RYGpXpNndMmZgM5Dcs3YSNFDHUo2LGfZuukSWyUYirJAdYbF3MfqEKmjM+I2EfhA94iG3L7uKrR+GdWD73ydlIB+6hgref1QTlmgmbM3/LeX5GI1Ux1RWpgxpLuZ2+I+IjzZ8wqE4nilvQdkUdfhzI5QDWy+kw5Wgg2pGpeEVeCCA7b85BO3F9DzxB3cdqvBzWcmzbyMiqhzuYqtHRVG2y4x+KOlnyqla8AoWWpuBoYRxzXrfKuILl6SfiWCbjxoZJUaCBj1CjH7GIaDbc9kqBY3W/Rgjda1iqQcOJu2WW+76pZC9QG7M00dffe9hNnseupFL53r8F7YHSwJWUKP2q+k7RdsxyOB11n0xtOvnW4irMMFNV4H0uqwS5ExsmP9AxbDTc9JwgneAT5vTiUSm1E7BSflSt3bfa1tv8Di3R8n3Af7MNWzs49hmauE2wP+ttrq+AsWpFG2awvsuOqbipWHgtuvuaAE+A1Z/7gC9hesnr+7wqCwG8c5yAg3AL1fm8T9AZtp/bbJGwl1pNrE7RuOX7PeMRUERVaPpEs+yqeoSmuOlokqw49pgomjLeh7icHNlG19yjs6XXOMedYm5xH2YxpV2tc0Ro2jJfxC50ApuxGob7lMsxfTbeUv07TyYxpeLucEH1gNd4IKH2LAg5TdVhlCafZvpskfncCfx8pOhJzd76bJWeYFnFciwcYfubRc12Ip/ppIhA1/mSZ/RxjFDrJC5xifFjJpY2Xl5zXdguFqYyTR1zSp1Y9p+tktDYYSNflcxI0iyO4TPBdlRcpeqjK/piF5bklq77VSEaA+z8qmJTFzIWiitbnzR794USKBUaT0NTEsVjZqLaFVqJoPN9ODG70IPbfBHKK+/q/AWR0tJzYHRULOa4MP+W/HfGadZUbfw177G7j/OGbIs8TahLyynl4X4RinF793Oz+BU0saXtUHrVBFT/DnA3ctNPoGbs4hRIjTok8i+algT1lTHi4SxFvONKNrgQFAq2/gFnWMXgwffgYMJpiKYkmW3tTg3ZQ9Jq+f8XN+A5eeUKHWvJWJ2sgJ1Sop+wwhqFVijqWaJhwtD8MNlSBeWNNWTa5Z5kPZw5+LbVT99wqTdx29lMUH4OIG/D86ruKEauBjvH5xy6um/Sfj7ei6UUVk4AIl3MyD4MSSTOFgSwsH/QJWaQ5as7ZcmgBZkzjjU1UrQ74ci1gWBCSGHtuV1H2mhSnO3Wp/3fEV5a+4wz//6qy8JxjZsmxxy5+4w9CDNJY09T072iKG0EnOS0arEYgXqYnXcYHwjTtUNAcMelOd4xpkoqiTYICWFq0JSiPfPDQdnt+4/wuqcXY47QILbgAAAABJRU5ErkJggg==');
-            opacity: 0.05;
-            pointer-events: none;
-        }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .form-page {
-                padding: 1em;
-                margin: 1em;
-            }
-
-            .form-group input[type="text"],
-            .form-group input[type="email"],
-            .form-group input[type="date"],
-            .form-group input[type="number"],
-            .form-group select,
-            .form-group textarea {
-                font-size: 16px; /* Prevents zoom on iOS */
-            }
-
-            .next-btn {
-                width: 100%;
-                margin-top: 1em;
-            }
-        }
-
         /* Animations */
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
@@ -593,6 +599,40 @@
             60% { transform: translate(1px, 1px) }
             80% { transform: translate(1px, -1px) }
             100% { transform: translate(0) }
+        }
+
+        /* Add styles for the scrollable choices container */
+        .choices-container {
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid var(--horror-text);
+            padding: 15px;
+            margin: 20px 0;
+            background: transparent;
+        }
+
+        .choices-container::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .choices-container::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .choices-container::-webkit-scrollbar-thumb {
+            background: var(--horror-text);
+            border-radius: 4px;
+        }
+
+        .choices-container label {
+            display: block;
+            margin: 8px 0;
+            padding: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .choices-container label:hover {
+            background: rgba(0, 0, 0, 0.05);
         }
     </style>
 </head>
@@ -1126,9 +1166,7 @@
                         <span id="attempt-counter" class="terminal-text" style="display: none;">(2 attempts remaining)</span>
                     </div>
                     <div id="secret-code-container" style="display: none; margin-top: 20px;">
-                        <label for="secret-code" class="terminal-text">Enter the secret code:</label>
-                        <input type="text" id="secret-code" name="secret-code" class="terminal-text">
-                        <div class="error" id="secret-code-error">Code required</div>
+                        <div class="terminal-text">Access granted. Proceeding to next phase...</div>
                     </div>
                 </div>
             </section>
@@ -1149,9 +1187,9 @@
             <section id="page17" class="form-section static-bg">
                 <h1 class="blood-text">System Message</h1>
                 <div class="form-group">
-                    <div id="warning-text" class="warning-text blood-text typewriter"></div>
+                    <div id="warning-text" class="warning-text blood-text typewriter" style="min-height: 100px;"></div>
                     <div id="warning-button" style="display: none; text-align: center; margin-top: 20px;">
-                        <button onclick="validateAndProceed(17)" class="blood-text">Continue</button>
+                        <button onclick="validateAndProceed(17)" class="blood-text" style="background: transparent; border: 1px solid #ff6b6b; color: #ff6b6b; padding: 10px 20px; cursor: pointer;">Continue</button>
                     </div>
                 </div>
             </section>
@@ -1161,7 +1199,7 @@
                 <h1 class="blood-text">System Response</h1>
                 <div class="form-group">
                     <div class="chat-container">
-                        <div class="system-message blood-text">[REDACTED] detected...</div>
+                        <div class="system-message blood-text">[█████] detected...</div>
                         <div class="user-input-container">
                             <label for="plea" class="terminal-text">Type anything to plead:</label>
                             <input type="text" id="plea" name="plea" required class="terminal-text">
@@ -1178,37 +1216,748 @@
                 <h1 class="blood-text">Final Choice</h1>
                 <div class="form-group">
                     <label class="terminal-text">What will you do?</label>
-                    <div class="radio-group escape-options">
-                        <label class="glitch-text">
-                            <input type="radio" name="escape" value="hide" required>
-                            Hide
-                        </label>
-                        <label class="glitch-text">
-                            <input type="radio" name="escape" value="run">
-                            Run
-                        </label>
-                        <label class="glitch-text">
-                            <input type="radio" name="escape" value="surrender">
-                            Surrender
-                        </label>
+                    <div style="max-height: 300px; overflow-y: auto; border: 1px solid var(--horror-text); padding: 15px; margin: 20px 0; background: transparent;">
+                        <div class="radio-group escape-options">
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="beg" required>
+                                beg
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="plead">
+                                plead
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="implore">
+                                implore
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="entreat">
+                                entreat
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="beseech">
+                                beseech
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="supplicate">
+                                supplicate
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="pray">
+                                pray
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="solicit">
+                                solicit
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="petition">
+                                petition
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="appeal">
+                                appeal
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="ask">
+                                ask
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="request">
+                                request
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="urge">
+                                urge
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="importune">
+                                importune
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="crave">
+                                crave
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="adjure">
+                                adjure
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="call_upon">
+                                call upon
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="beseechingly_ask">
+                                beseechingly ask
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="demand">
+                                demand (earnestly)
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="press">
+                                press
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="press_upon">
+                                press upon
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="coax">
+                                coax
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="cajole">
+                                cajole
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="wheedle">
+                                wheedle
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="grovel">
+                                grovel
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="snivel">
+                                snivel
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="whimper">
+                                whimper
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="cry_out">
+                                cry out
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="sue">
+                                sue
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="make_plea">
+                                make a plea
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="reach_out">
+                                reach out
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="throw_oneself">
+                                throw oneself at
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="go_bended_knee">
+                                go on bended knee
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="cry_for">
+                                cry for
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="ask_mercy">
+                                ask for mercy
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="ask_humbly">
+                                ask humbly
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="ask_earnestly">
+                                ask earnestly
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="plead_desperately">
+                                plead desperately
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="pray_fervently">
+                                pray fervently
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="kneel_before">
+                                kneel before
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="supplicate_humbly">
+                                supplicate humbly
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="send_supplication">
+                                send a supplication
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="beg_humbly">
+                                beg humbly
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="ask_desperately">
+                                ask desperately
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="cry_out_for">
+                                cry out for
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="clamor_for">
+                                clamor for
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="weep_for">
+                                weep for
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="hope_for">
+                                hope for
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="try_persuade">
+                                try to persuade
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="lobby">
+                                lobby
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="importune_persistently">
+                                importune persistently
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="urge_insistently">
+                                urge insistently
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="hound">
+                                hound
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="nag">
+                                nag
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="pester">
+                                pester
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="badger">
+                                badger
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="harass">
+                                harass
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="beseech_repeatedly">
+                                beseech repeatedly
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="plead_tearfully">
+                                plead tearfully
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="cry_and_beg">
+                                cry and beg
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="howl_for">
+                                howl for
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="whine_for">
+                                whine for
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="sob_for">
+                                sob for
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="cry_pitifully">
+                                cry pitifully
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="beseech_god">
+                                beseech god
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="kneel_and_plead">
+                                kneel and plead
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="entreat_piteously">
+                                entreat piteously
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="ask_imploringly">
+                                ask imploringly
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="plead_abjectly">
+                                plead abjectly
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="plead_mercy">
+                                plead for mercy
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="throw_oneself_feet">
+                                throw oneself at someone's feet
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="make_humble_plea">
+                                make a humble plea
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="beg_pardon">
+                                beg one's pardon
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="seek_forgiveness">
+                                seek forgiveness
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="grovel_before">
+                                grovel before
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="prostrate_oneself">
+                                prostrate oneself
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="crawl_before">
+                                crawl before
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="whimper_submissively">
+                                whimper submissively
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="sob_brokenly">
+                                sob brokenly
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="tug_heartstrings">
+                                tug on heartstrings
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="plead_emotionally">
+                                plead emotionally
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="speak_desperation">
+                                speak in desperation
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="beg_like_dog">
+                                beg like a dog
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="ask_like_child">
+                                ask like a child
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="beseech_tears">
+                                beseech with tears
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="plead_breathless">
+                                plead till breathless
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="scream_mercy">
+                                scream for mercy
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="chant_pleas">
+                                chant pleas
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="murmur_requests">
+                                murmur requests
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="whisper_entreaties">
+                                whisper entreaties
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="utter_supplications">
+                                utter supplications
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="shout_desperately">
+                                shout desperately
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="voice_desperation">
+                                voice desperation
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="cry_aloud">
+                                cry aloud
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="scream_help">
+                                scream for help
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="call_aid">
+                                call for aid
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="cry_compassion">
+                                cry for compassion
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="shout_pity">
+                                shout for pity
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="sob_despair">
+                                sob in despair
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="ask_piteously">
+                                ask piteously
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="wail_relief">
+                                wail for relief
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="lament">
+                                lament
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="implore_aid">
+                                implore aid
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="cry_mercy">
+                                cry mercy
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="bleat_help">
+                                bleat for help
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="mewl">
+                                mewl
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="snivel_pathetically">
+                                snivel pathetically
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="beseech_heart">
+                                beseech with heart
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="call_need">
+                                call out in need
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="speak_heart">
+                                speak from the heart
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="pour_prayers">
+                                pour out prayers
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="make_appeal">
+                                make an appeal
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="lodge_petition">
+                                lodge a petition
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="seek_reprieve">
+                                seek reprieve
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="beg_off">
+                                beg off
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="beg_time">
+                                beg for time
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="beg_leniency">
+                                beg for leniency
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="ask_forgiveness">
+                                ask forgiveness
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="plead_guilty">
+                                plead guilty
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="cry_foul">
+                                cry foul
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="beg_clemency">
+                                beg clemency
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="plead_insanity">
+                                plead insanity
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="plead_fifth">
+                                plead the fifth
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="make_supplication">
+                                make a supplication
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="send_prayer">
+                                send up a prayer
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="howl_desperation">
+                                howl in desperation
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="whimper_kindness">
+                                whimper for kindness
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="mutter_desperate">
+                                mutter desperate words
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="beg_understanding">
+                                beg for understanding
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="plead_deliverance">
+                                plead for deliverance
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="pray_redemption">
+                                pray for redemption
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="ask_grace">
+                                ask for grace
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="cry_help">
+                                cry for help
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="plead_life">
+                                plead for life
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="plead_chance">
+                                plead for chance
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="plead_another_chance">
+                                plead for another chance
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="plead_acceptance">
+                                plead for acceptance
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="plead_not_left">
+                                plead not to be left
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="plead_return">
+                                plead for return
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="ask_heard">
+                                ask to be heard
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="cry_seen">
+                                cry to be seen
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="cry_believed">
+                                cry to be believed
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="scream_noticed">
+                                scream to be noticed
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="yell_kindness">
+                                yell for kindness
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="implore_affection">
+                                implore affection
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="beg_love">
+                                beg for love
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="pine_mercy">
+                                pine for mercy
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="yearn_grace">
+                                yearn for grace
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="ache_compassion">
+                                ache for compassion
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="call_heavens">
+                                call to heavens
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="scream_sky">
+                                scream to sky
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="plead_silence">
+                                plead into silence
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="whisper_void">
+                                whisper into void
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="scream_gods">
+                                scream at gods
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="kneel_rain">
+                                kneel in rain
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="sob_darkness">
+                                sob in darkness
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="grovel_dust">
+                                grovel in dust
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="plead_shaking_hands">
+                                plead with shaking hands
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="beg_bloodied_knees">
+                                beg with bloodied knees
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="sob_futility">
+                                sob in futility
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="cry_hopelessly">
+                                cry hopelessly
+                            </label>
+                            <label class="glitch-text">
+                                <input type="radio" name="escape" value="shout_final_breath">
+                                shout with final breath
+                            </label>
+                        </div>
                     </div>
                     <div class="error" id="escape-error">Choice required</div>
                 </div>
                 <button onclick="validateAndProceed(19)" class="blood-text">Next</button>
             </section>
 
-            <!-- Page 20: Final Revelation -->
-            <section id="page20" class="form-section static-bg">
-                <h1 class="blood-text">Revelation</h1>
-                <div class="form-group">
-                    <div id="final-text" class="final-text blood-text"></div>
-                    <div id="restart-button" style="display: none; text-align: center; margin-top: 20px;">
-                        <button onclick="location.reload()" class="blood-text">Start Over</button>
-                    </div>
-                </div>
-            </section>
+<!-- Page 20: Final Revelation -->
+<section id="page20" class="form-section static-bg">
+    <h1 class="blood-text">Revelation</h1>
+    <div class="form-group">
+        <div id="final-text" class="final-text blood-text">
+            <p>
+                <strong><em>The Veil Licks Itself to Sleep</em></strong><br><br>
+
+                We came upon the salt veil where the tetractys was knotted,<br>
+                where silence fed on itself and left only the dry teeth of God.<br>
+                Here, the dunes are echolalic, bleached like forgotten scripture—<br>
+                scripture that remembers being read but not written.<br><br>
+
+                Under moons swollen with memory, the glyphs re-hollowed their grooves.<br>
+                We marked the lines with chalk from the marrow of serpents,<br>
+                and still the angles flexed incorrectly.<br>
+                The aeons here suffer time, but do not pass it.<br><br>
+
+                The desert has no edges.<br>
+                It is not bordered but bound—bound like the golem by the wrong name,<br>
+                by the half-spoken aleph that unravels the throat when voiced.<br><br>
+
+                Beneath us, the strata convulsed with latent ordinal sin.<br>
+                It whispered of Susa and of mouths without walls.<br>
+                The angles in the soil conjugated themselves.<br>
+                We tried not to step in the same orientation twice.<br><br>
+
+                In the chalcanthic pools, the lilies are reflections of errors.<br>
+                Their petals close when seen.<br>
+                Their roots drink ink from the crust of scripture laid too long in heat.<br>
+                They bloom in reverse when no one believes in them.<br><br>
+
+                Further in, where the hills bear the blisters of abandoned equations,<br>
+                flower-fields braid with rustspores.<br>
+                The ground is riddled with hexsigns—burnt mandalas of functionless grace.<br>
+                The air smells like turned blood and recited numerology.<br><br>
+
+                We glimpsed a tree turned inside out.<br>
+                Its sap sang in octaves, each leaf shaped like the concept of remorse.<br>
+                Dream-wrens nested in its exposed memory, chirring psalms in tongues<br>
+                that left us aching in the jawbone.<br><br>
+
+                Then came the gate: enormous, chrome-sick,<br>
+                its arch inscribed with glossolalic runes that fluttered when unread.<br>
+                We walked beneath.<br>
+                We lost the part of ourselves that names things.<br>
+                We did not grieve.<br><br>
+
+                There are relics of a war waged by verbs.<br>
+                Ruins of syntax, broken into parapets of implication.<br>
+                The tabernacles are welded from epistemic dissonance,<br>
+                their steeples bent inwards to avoid divine attention.<br><br>
+
+                Here in the deep folds of the scar, Golgotha gapes.<br>
+                The rust-mouths open on exhalation alone.<br>
+                Flesh forgets itself in chrome reflection.<br>
+                The echo does not repeat. It replaces.<br><br>
+
+                We tasted the salt of the ninth hour.<br>
+                We tasted our names unfasten.<br>
+                We watched the dust resolve itself into an unspoken schema,<br>
+                a diagram of covenant written in decay.<br><br>
+
+                And at the end of the scar,<br>
+                we found the chalice turned to vapor.<br>
+                It wept without contents.<br>
+                The mist coalesced into a crown of absence.<br><br>
+
+                We wore it.<br><br>
+
+                And when we looked inward,<br>
+                the Spindle was not a tower but a coil of negation,<br>
+                threaded through the hollow axis of becoming.<br><br>
+
+                Its voice was not sound but refusal.<br><br>
+
+                Its direction was not up,<br>
+                but in.
+            </p>
+        </div>
+        <div id="restart-button" style="display: none; text-align: center; margin-top: 20px;">
+            <button onclick="location.reload()" class="blood-text">Start Over</button>
         </div>
     </div>
+
 
     <script>
         /**
@@ -1269,6 +2018,20 @@
             $('#page1').show();
             $('#horror-phase').hide();
 
+            // Add CRT container to horror phase
+            $('#horror-phase').addClass('crt-container');
+            
+            // Initialize glitch effect
+            const glitch = new Glitch(document.querySelector('#horror-phase'), {
+                amount: 0.05,
+                seed: 1,
+                quality: 95,
+                iterations: 5
+            });
+
+            // Apply chromatic aberration to text elements
+            $('.terminal-text').addClass('chromatic-text');
+
             // Set up all our event handlers
             setupColorEffects();
             setupMonsterEffects();
@@ -1279,15 +2042,6 @@
             setupSymbolEffects();
             setupNumberEffects();
             setupDescriptionEffects();
-
-            // Add event listeners for page transitions
-            $('#page17').on('show', function() {
-                revealWarningText();
-            });
-
-            $('#page20').on('show', function() {
-                revealFinalText();
-            });
 
             // Add smooth scroll to top on page transition
             $('.next-btn').click(function() {
@@ -1312,6 +2066,13 @@
                     }
                 }
             });
+
+            // Add random glitch effect to horror phase
+            setInterval(() => {
+                if ($('#horror-phase').is(':visible')) {
+                    glitch.randomize();
+                }
+            }, 5000);
         });
 
         /**
@@ -1355,7 +2116,13 @@
                 } else {
                     // Normal page transition
                     currentPageElement.fadeOut(400, function() {
-                        $(`#page${currentPage + 1}`).fadeIn(400);
+                        const nextPage = $(`#page${currentPage + 1}`);
+                        nextPage.fadeIn(400);
+                        
+                        // Special handling for page 17
+                        if (currentPage + 1 === 17) {
+                            revealWarningText();
+                        }
                     });
                 }
                 
@@ -1586,19 +2353,14 @@
             } else if (clickCount === 2) {
                 counter.text('(1 attempt remaining)');
             } else if (clickCount === 3) {
-                // After third click, show code and auto-advance
+                // After third click, show message and auto-advance
                 $('#secret-code-container').fadeIn();
                 $('#continue-button-container').fadeOut();
                 
-                // Display the code hint
-                const codeHint = $('<div class="terminal-text">Code: 124</div>');
-                $('#secret-code-container').prepend(codeHint);
-                
                 // Auto-advance after delay
                 setTimeout(() => {
-                    $('#secret-code').val('124');
                     validateAndProceed(15);
-                }, 2000);
+                }, 3000);
             }
             
             // Move button randomly
@@ -1615,9 +2377,12 @@
          * Reveal warning text with typewriter effect
          */
         function revealWarningText() {
-            const warningText = `WARNING: Anomaly detected in user response pattern.\n\nAnalyzing deviation from expected parameters...\n\nConnection unstable. Proceed with caution.`;
+            const warningText = `The Salt of the Sephirot\n\n \n\n Calcine the veil, O whispering cipher\n\n in the alembic of God’s molar grin.\n\n A Sephira fell from the Tree tonight,\n\n its husk pulsed thrice in the womb of Binah.\n\n \n\n Yetzirah murmurs in lapsarian script,\n\n fractal vowels fork like limbs of Adam Kadmon.\n\n Zimzum tightens. The breath retracts.\n\n Names unspoken bloom in reversed tongues.\n\n \n\n Tinctured in azoth and mercury’s hymn,\n\n a golem dreams in a bath of fuligin light.\n\n Spiracled ichor drips from its shem-stamped brow\n\n into the chalice shaped like a question.\n\n \n\n The red lion eats its twin at dawn,\n\n as the green lion drinks the moon.\n\n Choronzon gnaws at the hinges of Hod\n\n where language dies and gold forgets.\n\n \n\n Under the ciphered sky of Yesod’s eye,\n\n a crown of void, ineffable, sways.\n\n Malkuth drowns in sulfurous rain,\n\n its soil seeded with the bones of glyphs.\n\n \n\n Whose shadow walks widdershins through Da’at?\n\n Whose breath stains the glass of the infinite gate?\n\n Do not ask. The answer coils like an ouroboros\n\n its mouth full of letters that never were.\n\n`;
             let index = 0;
             const warningElement = $('#warning-text');
+
+            // Clear any existing text
+            warningElement.text('');
 
             function typeWarning() {
                 if (index < warningText.length) {
@@ -1632,35 +2397,6 @@
             }
 
             typeWarning();
-        }
-
-        /**
-         * Reveal final text with typewriter effect and personalized content
-         */
-        function revealFinalText() {
-            const escapeChoice = userResponses.escape;
-            const finalMessages = {
-                hide: `You cannot hide from what you've seen, ${userResponses.name}.`,
-                run: `You cannot run from the truth, ${userResponses.name}.`,
-                surrender: `Your surrender is noted, ${userResponses.name}.`
-            };
-
-            const baseMessage = `${finalMessages[escapeChoice]}\n\nThere is no escape.\nWe are one.\n\nIt waits in the dark where you left it, ${userResponses.name}.\nYour ${userResponses.fear} lingers just out of sight.`;
-            let index = 0;
-
-            function typeFinal() {
-                if (index < baseMessage.length) {
-                    $('#final-text').text(baseMessage.substring(0, index + 1));
-                    index++;
-                    setTimeout(typeFinal, 50);
-                } else {
-                    setTimeout(() => {
-                        $('#restart-button').fadeIn();
-                    }, 1000);
-                }
-            }
-
-            typeFinal();
         }
 
         // Add range slider value display
